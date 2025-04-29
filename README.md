@@ -161,4 +161,59 @@ alpha = 0.05
 if p_value < alpha:
     print("Reject H₀ : Evidence suggests the coin is biased")
 else:
-    print("Fail to reject H₀ : No evidence the coin is biased")
+    print("Fail to reject H₀ : No evidence the coin is biased") ,,,,
+
+,,,,,,,,,,,
+
+import numpy as np
+import random
+import matplotlib.pyplot as plt
+
+# Define number of states (M >= 2)
+M = 2  # You can change this
+
+# Define state labels (0, 1, ..., M-1)
+states = list(range(M))
+
+# Define transition probability matrix randomly
+TransitionMatrix = np.random.rand(M, M)
+TransitionMatrix = TransitionMatrix / TransitionMatrix.sum(axis=1, keepdims=True)
+
+print("Transition Matrix (Step 1):\n", TransitionMatrix)
+
+# Number of steps for Brownian motion simulation
+N = 5
+
+# Start from a random state
+CurrentState = random.choice(states)
+
+print("\nStarting state:", CurrentState)
+print("Particle path:")
+
+# Simulate Markovian Brownian motion
+path = [CurrentState]
+for _ in range(N-1):
+    CurrentState = np.random.choice(states, p=TransitionMatrix[CurrentState])
+    path.append(CurrentState)
+
+print(path)
+
+# Now compute Transition Matrices for multiple steps
+def matrix_power(matrix, n):
+    return np.linalg.matrix_power(matrix, n)
+
+print("\nTransition Matrices for 1 to N steps:")
+
+for steps in range(1, N+1):
+    T_n = matrix_power(TransitionMatrix, steps)
+    print(f"\nTransition matrix for {steps} step(s):\n", np.round(T_n, 3))
+
+# --- PLOT the Brownian motion path ---
+plt.figure(figsize=(10, 6))
+plt.plot(range(N), path, marker='o', linestyle='-', color='b')
+plt.title("Markovian Brownian Motion of a Particle")
+plt.xlabel("Time Step")
+plt.ylabel("State")
+plt.grid(True)
+plt.yticks(states)  # So only valid states are shown on y-axis
+plt.show()
